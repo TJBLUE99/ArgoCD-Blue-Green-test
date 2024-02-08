@@ -1,12 +1,12 @@
 apiVersion: autoscaling/v2beta2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: my-app-hpa
+  name: mynodeapp
 spec:
   scaleTargetRef:
     apiVersion: argoproj.io/v1alpha1
     kind: Rollout
-    name: my-app
+    name: mynodeapp
   minReplicas: 1
   maxReplicas: 10
   metrics:
