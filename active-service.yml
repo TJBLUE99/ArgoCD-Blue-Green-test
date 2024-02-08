@@ -1,0 +1,12 @@
+kind: Service
+apiVersion: v1
+metadata: 
+ name: rollout-node-app-active
+spec:
+ selector:
+   app: mynodeapp
+  ports:
+   -protocol: TCP
+    port: 80
+    targetPort: 5000
+ 
