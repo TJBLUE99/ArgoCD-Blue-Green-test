@@ -1,12 +1,11 @@
 kind: Service
 apiVersion: v1
-metadata: 
- name: rollout-node-app-active
+metadata:
+  name: rollout-ngnix-active # <- active
 spec:
- selector:
-   app: mynodeapp
+  selector:
+    app: mynodeapp
   ports:
-   -protocol: TCP
-    port: 80
-    targetPort: 5000
- 
+    - protocol: TCP
+      port: 80
+      targetPort: 80
