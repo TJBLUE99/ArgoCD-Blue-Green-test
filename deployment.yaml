@@ -1,0 +1,32 @@
+apiVersion: argoproj.io/v1alpha1   
+kind: Rollout
+metadata:
+  creationTimestamp: null
+  labels:
+    app: mynodedeployment
+  name: mynodedeployment-bluegreen
+spec:
+  replicas: 2
+   revisionHistoryLimit: 5
+  selector:
+    matchLabels:
+      app: mynodedeployment-bluegreen
+  strategy: {
+    blueGreen:
+     activeService: mynodeapp-bluegreen-active
+     previewService: mynodeapp-bluegreen-preview
+     autoPromotionEnabled: false
+  }
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: mynodedeployment-bluegreen
+    spec:
+      containers:
+      - image: mynodeapp
+        name: mynodeapp
+        resources: {}
+        ports: 
+         -containerPort: 8080
+status: {}
