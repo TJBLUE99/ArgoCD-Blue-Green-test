@@ -1,32 +1,54 @@
-apiVersion: argoproj.io/v1alpha1   
+apiVersion: argoproj.io/v1alpha1
 kind: Rollout
 metadata:
-  creationTimestamp: null
-  labels:
-    app: mynodedeployment
-  name: mynodedeployment-bluegreen
+  name: mynodeapp
 spec:
-  replicas: 2
-   revisionHistoryLimit: 5
+  analysis:
+    successfulRunHistoryLimit: 3
+    unsuccessfulRunHistoryLimit: 3
+
   selector:
     matchLabels:
-      app: mynodedeployment-bluegreen
-  strategy: {
-    blueGreen:
-     activeService: mynodeapp-bluegreen-active
-     previewService: mynodeapp-bluegreen-preview
-     autoPromotionEnabled: false
-  }
+      app: mynodeapp
+
   template:
     metadata:
-      creationTimestamp: null
       labels:
-        app: mynodedeployment-bluegreen
+        app: mynodeapp
     spec:
       containers:
-      - image: mynodeapp
-        name: mynodeapp
-        resources: {}
-        ports: 
-         -containerPort: 8080
-status: {}
+        - name: mynodeapp
+          image: mynodeapp
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          resources:
+            limits:
+              cpu: 10m
+
+  rollbackWindow:
+    revisions: 3
+
+  strategy:
+    blueGreen:
+      activeService: rollout-mynodeapp-active # <- matches Active Service metadata
+      previewService: rollout-mynodeapp-preview # <- matches Preview Service metadata
+
+      prePromotionAnalysis:
+        templates:
+          - templateName: pre-promotion-analysis
+        args:
+          - name: rollout-mynodeapp-preview
+
+      postPromotionAnalysis:
+        templates:
+          - templateName: post-promotion-analysis
+
+      previewReplicaCount: 2
+      autoPromotionEnabled: true
+      autoPromotionSeconds: 1
+      scaleDownDelaySeconds: 30
+
+      # 0 means not to scale down
+      abortScaleDownDelaySeconds: 30

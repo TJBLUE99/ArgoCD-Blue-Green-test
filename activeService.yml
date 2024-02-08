@@ -1,7 +1,7 @@
 kind: Service
 apiVersion: v1
 metadata:
-  name: rollout-ngnix-active # <- active
+  name: rollout-mynodeapp-active # <- active
 spec:
   selector:
     app: mynodeapp
